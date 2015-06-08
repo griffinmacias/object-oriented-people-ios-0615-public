@@ -15,10 +15,11 @@
 @property (strong, nonatomic) NSString *name;
 @property (nonatomic) BOOL isFemale;
 @property (strong, nonatomic) NSMutableArray *friends;
-- (NSNumber *)grow;
 - (void)addFriends:(NSArray *)friends;
+- (instancetype)initWithName:(NSString *)name;
 - (NSString *)generatePartyList;
+- (NSNumber *)grow;
 - (BOOL)removeFriend: (Person *)friend;
 - (NSArray *)removeFriends: (NSArray *)friends;
--(id)initWithName:(NSString *)name;
+
 @end

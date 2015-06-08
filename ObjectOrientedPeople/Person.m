@@ -9,20 +9,6 @@
 #import "Person.h"
 @implementation Person
 
--(id)initWithName:(NSString *)name
-{
-    if (self = [super init]) {
-        _name = name;
-        _height = @9;
-    }
-    return self;
-}
-
--(id)init
-{
-    return [self initWithName:@""];
-}
-
 #define ARC4RANDOM_MAX 0x100000000
 - (CGFloat)randomFloatBetweenNumber:(CGFloat)minRange andNumber:(CGFloat)maxRange
 {
@@ -31,85 +17,152 @@
     + minRange;
 }
 
+
+- (instancetype)init
+{
+   
+    return [self initWithName:@""];
+    
+    
+}
+
+
+- (instancetype)initWithName:(NSString *)name
+{
+    self = [super init];
+    
+    if (self) {
+        
+        _name = name;
+        _height = @9;
+        _friends = [NSMutableArray array];
+        
+    }
+    return self;
+    
+    
+    
+
+    
+}
+
 - (NSNumber *)grow
 {
-    CGFloat height;
-    if (self.isFemale)
-    {
-        if ([self.age intValue] < 11)
+    /*
+     If it's a girl with age < 11 grow between 0 and 1 inch, age >= 11 and <=15 grow .5 to 2 inches. >15 grow 0 inches
+     */
+    if (self.isFemale) {
+        if (self.age.integerValue < 11)
         {
-            height = [self randomFloatBetweenNumber:0 andNumber:1];
-        }
-        else if
-            ([self.age intValue] >= 11 && [self.age intValue] <= 15)
-        {
-            height = [self randomFloatBetweenNumber:.5 andNumber:2];
-        }
-    else if
-            ([self.age intValue] > 15)
-        {
-            height = 0;
-        }
-        } else {
+        NSNumber *growth = @(self.height.floatValue + [self randomFloatBetweenNumber:0 andNumber:1]);
             
+            return growth;
+        }
+        else if (self.age.integerValue <= 15)
+        {
+          NSNumber *growth = @(self.height.floatValue + [self randomFloatBetweenNumber:0.5 andNumber:2]);
             
-            if ([self.age intValue] < 12)
-            {
-                height = [self randomFloatBetweenNumber:0 andNumber:1];
-            }
-            else if
-                ([self.age intValue] >= 12 && [self.age intValue] <= 16)
+            return growth;
+        }
+    }
+        /*
+         If it's a boy with age < 12 grow between 0 and 1 inch, age >=12 and <=16 grow .5-3.5 inches. >16 grow 0 inches
+         
+         */
+        
+        if (!self.isFemale) {
+            if (self.age.integerValue < 12) {
+                NSNumber *growth = @(self.height.floatValue + [self randomFloatBetweenNumber:0 andNumber:1]);
                 
+                return growth;
+            } else if (self.age.integerValue <= 16)
             {
-                    height = [self randomFloatBetweenNumber:.5 andNumber:3.5];
-                }
-            else if
-                    
-                    ([self.age intValue] > 16)
-                {
-                    height = 0;
-                }
+                NSNumber *growth = @(self.height.floatValue + [self randomFloatBetweenNumber:0.5 andNumber:3.5]);
+                
+                return growth;
+            }
         }
-    return [NSNumber numberWithFloat:([self.height floatValue] + height)];
+    
+    return self.height;
 }
 
 - (void)addFriends:(NSArray *)friends
 {
-    [self.friends addObjectsFromArray:friends];
-       
+/*
+ Add the elements of the passed in NSArray to our friends property.
+ 
+ */
+    
+    for (NSString *friend in friends) {
+        [self.friends addObject:friend];
     }
+    
+    
+}
+
 
 - (NSString *)generatePartyList
 {
-    NSMutableArray *friendsList = [[NSMutableArray alloc] init];
-    for (Person *friend in self.friends) {
-        [friendsList addObject:[NSString stringWithFormat:@"%@", friend.name]];
-    }
-    
-    return [friendsList componentsJoinedByString:@", "];
-}
-- (BOOL)removeFriend: (Person *)friend
-         {
-             NSUInteger remover = [self.friends indexOfObject:friend];
-             if (remover == NSNotFound)
-             {
-                 return  NO;
-             } else {
-                 [self.friends removeObjectAtIndex:remover];
-                 return YES;
-             }
-         }
-- (NSArray *)removeFriends: (NSArray *)friends
-{
-    NSMutableArray *removedFrz = [[NSMutableArray alloc] init];
-    for (Person *friend in friends) {
-       
-        if ([self removeFriend:friend])
+    NSMutableString *partyList = [[NSMutableString alloc] init];
+    for (Person *friend in self.friends){
+        if ([self.friends.lastObject isEqual:friend]) {
+            [partyList appendFormat:@"%@", friend.name];
+        } else
         {
-            [removedFrz addObject:friend];
+                [partyList appendFormat:@"%@, ", friend.name];
         }
     }
-    return removedFrz;
+ 
+    
+    return partyList;
+    
 }
+- (BOOL)removeFriend: (Person *)friend
+{
+    if ([self.friends containsObject:friend]) {
+        [self.friends removeObject:friend];
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+- (NSArray *)removeFriends: (NSArray *)friends
+{
+    NSMutableArray *removedFriends = [NSMutableArray array];
+    for (NSString *removeFriend in friends) {
+        if ([self.friends containsObject:removeFriend]) {
+            [self.friends removeObject:removeFriend];
+            [removedFriends addObject:removeFriend];
+        }
+    }
+    
+    
+    return removedFriends;
+    
+    
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @end
